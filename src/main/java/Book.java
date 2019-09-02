@@ -1,42 +1,25 @@
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Book {
     private String title;
     private String author;
-    private double isbn;
+    private String isbn;
     private String publisher;
     private String language;
     private int publishedYear;
     private BindingType bindingType;
-    private double price;
-    public int count = 100;
+    private Double price;
 
-    Book(String title, String author, double isbn){
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-
-        setPublisher();
-        setLanguage();
-        setPublishedYear();
-
-        this.bindingType = setBindingType();
-        setPrice();
-        setCount();
-    }
-
-    Book(String title,String author, double isbn, String publisher, String language, int publishedYear, String bindingType, double price,int count ){
+    Book(String title,String author, String isbn, String publisher, String language, int publishedYear , Double price , BindingType bindingType){
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.publisher =publisher;
         this.language =language;
         this.publishedYear = publishedYear;
-        this.bindingType = BindingType.valueOf(bindingType);
+        this.bindingType = bindingType;
         this.price = price;
-        this.count = count;
+
     }
 
     public String getAuthor(){
@@ -45,61 +28,56 @@ public class Book {
 
     public String getTitle(){return this.title;}
 
-    private void setPublisher(){
-        Scanner in = new Scanner(System.in);
-        System.out.print("Enter Publisher :");
-        this.publisher = in.nextLine();
+    public String getIsbn(){
+        return this.isbn;
     }
 
-    private void setLanguage(){
-        Scanner in = new Scanner(System.in);
-        System.out.print("Enter Language :");
-        this.language = in.nextLine();
-    }
+    public String getPublisher(){return this.publisher;}
 
-    private void setPublishedYear(){
-        Scanner in = new Scanner(System.in);
-        System.out.print("Enter Published Year :");
-        this.publishedYear = Integer.parseInt(in.nextLine());
-    }
+    public String getLanguage() { return this.language; }
 
     public int getPublishedYear(){
         return this.publishedYear;
     }
 
-    private BindingType setBindingType(){
-        Scanner in = new Scanner(System.in);
-        System.out.print("Enter BindingType :");
-        String bind = in.nextLine();
-        bind = bind.toUpperCase();
-        return BindingType.valueOf(bind);
+    public BindingType getBindingType() { return this.bindingType; }
+
+    public Double getPrice() { return this.price; }
+
+
+    private void setTitle(String title){
+        this.title = title;
     }
 
-    private void setPrice(){
-        Scanner in = new Scanner(System.in);
-        System.out.print("Enter Price : ");
-        this.price = in.nextDouble();
+    private void setAuthor(String author){
+        this.author = author;
     }
 
-    public void setCount(){
-        Scanner in = new Scanner(System.in);
-        System.out.print("Enter Count : ");
-        this.count = Integer.parseInt(in.nextLine());
+    private void setIsbn(String isbn){
+        this.isbn = isbn;
     }
 
-    public void showInfo(){
-        System.out.println(this.title + ", " + this.author + " ," + this.publisher + " ," + Double.toString(this.isbn) + " ," + this.price +", " + this.bindingType + ", " + Integer.toString(this.publishedYear));
+    private void setPublisher(String publisher){
+        this.publisher = publisher;
     }
 
-    public static void showBooks(ArrayList<Double> arr){
-        for(Double isbn : arr){
-            Globals.isbnMap.get(isbn).showInfo();
-        }
+    private void setLanguage(String language){
+        this.language = language;
     }
 
-    public static void showBooks(Set<Double> s){
-        for(Double isbn : s){
-            Globals.isbnMap.get(isbn).showInfo();
-        }
+    private void setPublishedYear(int publishedYear){
+        this.publishedYear = publishedYear;
+    }
+
+    private void setBindingType(BindingType bindingType){
+        this.bindingType = bindingType;
+    }
+
+    private void setPrice(Double price){
+        this.price = price;
+    }
+
+    public void showBookInfo(){
+        System.out.println("Title : " + this.title + " , Author: " + this.author + " , Publisher: " + this.publisher + " , ISBN: " + this.isbn + " , Price: " + Double.toString(this.price) +" , Binding Type: " + this.bindingType + " , Published Year: " + Integer.toString(this.publishedYear));
     }
 }
