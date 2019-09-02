@@ -14,7 +14,11 @@ class BookDatabaseManager{
     BookDatabaseManager() throws IOException {
         isbnToBookMap = new HashMap<String ,Book>();
         titleToISBNListMap = new HashMap<String , List<String>>();
+        long startTime = System.currentTimeMillis();
         initializeDataset();
+        System.out.print(System.currentTimeMillis() - startTime);
+        System.out.print(" Milli Seconds Taken for Initializing the Maps\n");
+
     }
 
     // Converts String CSV for a book to Book object
@@ -103,7 +107,12 @@ class BookDatabaseManager{
                 return;
         }
 
+        long startTime = System.currentTimeMillis();
+
         isbnToBookTreeMap.putAll(isbnToBookMap);
+
+        System.out.print(System.currentTimeMillis() - startTime);
+        System.out.print(" Milli Seconds Taken to get Sorted Data\n");
 
         Scanner in= new Scanner(System.in);
         String input ;
@@ -158,6 +167,7 @@ class BookDatabaseManager{
         }
         else{
             System.out.println(System.currentTimeMillis() - startTime);
+            System.out.print(" Milli Seconds Taken to Search\n");
             System.out.println("Book Not Available!");
         }
     }
