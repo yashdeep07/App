@@ -5,11 +5,16 @@ import java.util.*;
 class App {
 
     public static void main(String args[]) throws IOException {
-        BookDatabaseManager manager = new BookDatabaseManager();
+
 
         Scanner in = new Scanner(System.in);
+        String filePath ;
+        if(args.length == 1)
+            filePath = args[0];
+        else
+            filePath = "/home/yashdeep/Documents/App/Write.csv";
 
-
+        BookDatabaseManager manager = new BookDatabaseManager( filePath );
         System.out.println("To Add new Book, Type '1'\nTo Search Book in a Database ,Type '2'\nTo Order a Book, Type '3'\nTo View Books, Type '4'");
         System.out.println("Type 'q' to quit");
         String userInput = in.nextLine();

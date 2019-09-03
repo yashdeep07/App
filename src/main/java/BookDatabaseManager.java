@@ -6,12 +6,13 @@ import java.io.IOException;
 import java.util.*;
 
 class BookDatabaseManager{
-    private String pathToDatabaseDirectory = "/home/honey/IdeaProjects/App/";
-    private String fileName ="Write.csv";
+    // private String pathToDatabaseDirectory = "/home/honey/IdeaProjects/App/";
+    private String filePath ="/home/yashdeep/Documents/App/Write.csv";
     private HashMap<String ,Book> isbnToBookMap;
     private HashMap<String , List<String>> titleToISBNListMap;
 
-    BookDatabaseManager() throws IOException {
+    BookDatabaseManager( String filePath ) throws IOException {
+        this.filePath = filePath;
         isbnToBookMap = new HashMap<String ,Book>();
         titleToISBNListMap = new HashMap<String , List<String>>();
         long startTime = System.currentTimeMillis();
@@ -31,7 +32,7 @@ class BookDatabaseManager{
     // initializes isbnToBookMap and titleToISBNListMap
     private void initializeDataset() throws IOException {
 
-        BufferedReader csvReader = new BufferedReader(new FileReader(pathToDatabaseDirectory + fileName));
+        BufferedReader csvReader = new BufferedReader(new FileReader(filePath));
         String row;
         while ((row = csvReader.readLine()) != null) {
             Book book = csvRowToBook(row);
