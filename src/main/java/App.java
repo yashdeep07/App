@@ -8,20 +8,21 @@ class App {
 
 
         Scanner in = new Scanner(System.in);
-        String filePath ;
-        if(args.length == 1)
+        String filePath;
+        if (args.length == 1)
             filePath = args[0];
         else
-            filePath = "/home/yashdeep/Documents/App/Write.csv";
+            filePath = "/home/honey/IdeaProjects/App/Write.csv";
 
-        BookDatabaseManager manager = new BookDatabaseManager( filePath );
-        System.out.println("To Add new Book, Type '1'\nTo Search Book in a Database ,Type '2'\nTo Order a Book, Type '3'\nTo View Books, Type '4'");
+        BookDatabaseManager manager = new BookDatabaseManager(filePath);
+        Cart userCart = new Cart();
+        System.out.println("To Add new Book, Type '1'\nTo Search Book in a Database ,Type '2'\nTo View Books, Type '3'\nTo View Cart, Type '4'\nTo Add book to the cart Type '5'\nTo Edit Cart Type '6'");
         System.out.println("Type 'q' to quit");
         String userInput = in.nextLine();
-        String bookTitle ;
-        while(!userInput.equals("q")){
+        String bookTitle;
+        while (!userInput.equals("q")) {
 
-            switch(userInput){
+            switch (userInput) {
 
                 case "1":
                     Book book = addBookInterface();
@@ -34,43 +35,65 @@ class App {
                     manager.searchBookInDatabase(bookTitle);
                     break;
 
-                case "3":
+                /*case "3":
                     bookTitle = orderBookInterface();
                     manager.orderBook(bookTitle);
+                    break;*/
+
+                case "3":
+                    SortFilter filter = viewBooksInterface();
+                    manager.viewBooks(filter);
+                    userInput = "5";
                     break;
 
                 case "4":
-                    SortFilter filter = viewBooksInterface();
-                    manager.viewBooks(filter);
+                    userCart.showCart();
                     break;
 
+                case "5":
+                    System.out.println("Type Book ISBN number to add it to cart or Type 'b' to go back to Main Menu.");
+                    userInput = in.nextLine();
+                    if(!userInput.equals("b")){
+                        Book book1 = manager.getBook(userInput);
+                        System.out.println("Type Number of Books you want to order.");
+                        userInput = in.nextLine();
+                        userCart.addProduct(book1,Integer.parseInt(userInput));
+                        System.out.println("Book Added To Your Cart\n");
+                    }
+                    break;
+
+                case "6":
+                    while(true){
+                        userCart.showCart();
+                        System.out.println("Type '1' to Edit Quantity of Books\nType '2' to Remove Book\nType '3' to go back to Main Menu");
+                        userInput = in.nextLine();
+                        if(userInput.equals("1")){
+                            System.out.println("Type ISBN of the Book to Edit");
+                            String isbn = in.nextLine();
+                            System.out.println("Type Quantity of the Books you want to order");
+                            int quantity = Integer.parseInt(in.nextLine());
+                            userCart.editQuantity(manager.getBook(isbn) , quantity);
+
+                        }else if(userInput.equals("2")){
+                            System.out.println("Type ISBN of the Book to Remove\n");
+                            String isbn = in.nextLine();
+                            userCart.removeItem(manager.getBook(isbn));
+                        }
+                        else break;
+                    }
+                    break;
                 default:
                     System.out.println("Type Valid Option!!");
                     break;
             }
 
-            System.out.println("To Add new Book, Type '1'\nTo Search Book in a Database ,Type '2'\nTo Order a Book, Type '3'\nTo View Books, Type '4'");
+            System.out.println("To Add new Book, Type '1'\nTo Search Book in a Database ,Type '2'\nTo View Books, Type '3'\nTo View Cart, Type '4'\nTo Add book to the cart Type '5'\nTo Edit Cart Type '6'");
             System.out.println("Type 'q' to quit");
             userInput = in.nextLine();
         }
-
-        /*Book b1 = new Book("Red Wolf", "Marlon James",  "123456749", "JKL", "English", 1996, (double) 999 , BindingType.HARDBOUND);
-        manager.addBookToDatabase(b1);
-
-
-
-        System.out.println("search");
-        manager.searchBookInDatabase("Red Wolf");
-
-        manager.searchBookInDatabase("vBUN")                                                                  ;
-
-        SortFilter filter = new SortFilter(SortField.PUBLISHEDYEAR,SortOrder.DESC );
-        manager.viewBooks(filter);
-
-        *//*RandomFileGenerator gen = new RandomFileGenerator();
-        gen.createCsvFileWithRandomValues();*/
-
     }
+
+
 
     // Interface for Retrieving New Book Details
     // Returns New Book Object to be added in the database

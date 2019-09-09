@@ -77,7 +77,16 @@ public class Book {
         this.price = price;
     }
 
-    public void showBookInfo(){
-        System.out.println("Title : " + this.title + " , Author: " + this.author + " , Publisher: " + this.publisher + " , ISBN: " + this.isbn + " , Price: " + Double.toString(this.price) +" , Binding Type: " + this.bindingType + " , Published Year: " + Integer.toString(this.publishedYear));
+
+    public void listView(){
+        System.out.println("Title     :\t" + this.title + "\t" + "Author    :\t" + this.author + "\t" +"Price     :\t" + String.format("%.2f", this.price) + "\t\t" +"ISBN      :\t" + this.isbn + "\t" +"Year      : " + this.publishedYear);
+    }
+
+    public void detailsView(){
+        System.out.println("Title     :\t" + this.title);
+        System.out.println("Author    :\t" + this.author);
+        System.out.println("Publisher :\t" + this.publisher);
+        System.out.println("Price     :\t" + this.price);
+        System.out.println("ISBN      :\t" + this.isbn);
     }
 }
