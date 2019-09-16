@@ -3,35 +3,29 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 class BookDatabaseManager{
-    private String filePath = "/home/honey/IdeaProjects/App/Write.csv";
-    //private String filePath ="/home/yashdeep/Documents/App/Write.csv";
+    private String filePath;
+
     private HashMap<String ,Book> isbnToBookMap;
-    private HashMap<String , List<String>> titleToISBNListMap;
-    private TreeSet<String> titleIndexes;
-    private TreeSet<String> authorIndexes;
-    private TreeSet<String> yearIndexes;
+
+    private TreeMap<String , List<String>> titleIndexes;
+    private TreeMap<String , List<String>> authorIndexes;
+    private TreeMap<Integer , List<String>> yearIndexes;
 
     BookDatabaseManager( String filePath ) throws IOException {
         this.filePath = filePath;
         isbnToBookMap = new HashMap<String ,Book>();
-        titleToISBNListMap = new HashMap<String , List<String>>();
-        titleIndexes = new TreeSet<>(this.getTitleComparator());
-        authorIndexes = new TreeSet<String>(this.getAuthorComparator());
-        yearIndexes = new TreeSet<String>(this.getPublishedYearComparator());
+        titleIndexes = new TreeMap<String , List<String>>();
+        authorIndexes = new TreeMap<String , List<String>>();
+        yearIndexes = new TreeMap<Integer , List<String>>();
+
+
         long startTime = System.currentTimeMillis();
         initializeDataset();
-        long t2 = System.currentTimeMillis();
-        titleIndexes.addAll(isbnToBookMap.keySet());
-        authorIndexes.addAll(isbnToBookMap.keySet());
-        yearIndexes.addAll(isbnToBookMap.keySet());
-        long t3 = System.currentTimeMillis();
-        System.out.print(t2 - startTime);
+        System.out.print(System.currentTimeMillis() - startTime);
         System.out.print(" Milli Seconds Taken for Initializing the Maps\n");
-        System.out.print(t3 - t2);
-        System.out.print(" Milli Seconds Taken for Indexing\n");
 
     }
 
@@ -89,12 +83,30 @@ class BookDatabaseManager{
     public void addBookToDatabase(Book book){
         isbnToBookMap.put(book.getIsbn(), book);
 
-        if(titleToISBNListMap.containsKey(book.getTitle())){
-            titleToISBNListMap.get(book.getTitle()).add(book.getIsbn());
+        if(authorIndexes.containsKey(book.getAuthor())){
+            authorIndexes.get(book.getAuthor()).add(book.getIsbn());
         }
         else{
-            titleToISBNListMap.put(book.getTitle() , new ArrayList<String>());
-            titleToISBNListMap.get(book.getTitle()).add(book.getIsbn());
+            authorIndexes.put(book.getAuthor() , new ArrayList<String>());
+            authorIndexes.get(book.getAuthor()).add(book.getIsbn());
+        }
+
+
+
+        if(titleIndexes.containsKey(book.getTitle())){
+            titleIndexes.get(book.getTitle()).add(book.getIsbn());
+        }
+        else{
+            titleIndexes.put(book.getTitle() , new ArrayList<String>());
+            titleIndexes.get(book.getTitle()).add(book.getIsbn());
+        }
+
+        if(yearIndexes.containsKey(book.getPublishedYear())){
+            yearIndexes.get(book.getPublishedYear()).add(book.getIsbn());
+        }
+        else{
+            yearIndexes.put(book.getPublishedYear() , new ArrayList<String>());
+            yearIndexes.get(book.getPublishedYear()).add(book.getIsbn());
         }
     }
 
@@ -110,13 +122,13 @@ class BookDatabaseManager{
             case TITLE:
                 if(filter.getOrder() == SortOrder.DESC){
                     long startTime = System.currentTimeMillis();
-                    tempIsbnList = new ArrayList<String>(titleIndexes.descendingSet());
+                    tempIsbnList = getISBNListFromTitleMap(titleIndexes.descendingKeySet());
                     System.out.print(System.currentTimeMillis() - startTime);
                     itr = tempIsbnList.listIterator();
                 }
                 else{
                     long startTime = System.currentTimeMillis();
-                    tempIsbnList = new ArrayList<String>(titleIndexes);
+                    tempIsbnList = getISBNListFromTitleMap((NavigableSet<String>) titleIndexes.keySet());
                     System.out.print(System.currentTimeMillis() - startTime);
                     itr =  tempIsbnList.listIterator();
                 }
@@ -125,13 +137,13 @@ class BookDatabaseManager{
             case AUTHOR:
                 if(filter.getOrder() == SortOrder.DESC){
                     long startTime = System.currentTimeMillis();
-                    tempIsbnList = new ArrayList<String>(authorIndexes.descendingSet());
+                    tempIsbnList = getISBNListFromAuthorMap(authorIndexes.descendingKeySet());
                     System.out.print(System.currentTimeMillis() - startTime);
                     itr = tempIsbnList.listIterator();
                 }
                 else{
                     long startTime = System.currentTimeMillis();
-                    tempIsbnList = new ArrayList<String>(authorIndexes);
+                    tempIsbnList = getISBNListFromAuthorMap((NavigableSet<String>) authorIndexes.keySet());
                     System.out.print(System.currentTimeMillis() - startTime);
                     itr =  tempIsbnList.listIterator();
                 }
@@ -141,13 +153,13 @@ class BookDatabaseManager{
             case PUBLISHEDYEAR:
                 if(filter.getOrder() == SortOrder.DESC){
                     long startTime = System.currentTimeMillis();
-                    tempIsbnList = new ArrayList<String>(yearIndexes);
+                    tempIsbnList = getISBNListFromYearMap((NavigableSet<Integer>) yearIndexes.keySet());
                     System.out.print(System.currentTimeMillis() - startTime);
                     itr =  tempIsbnList.listIterator();
                 }
                 else{
                     long startTime = System.currentTimeMillis();
-                    tempIsbnList = new ArrayList<String>(yearIndexes.descendingSet());
+                    tempIsbnList = getISBNListFromYearMap(yearIndexes.descendingKeySet());
                     System.out.print(System.currentTimeMillis() - startTime);
                     itr =  tempIsbnList.listIterator();
                 }
@@ -163,25 +175,6 @@ class BookDatabaseManager{
         Scanner in= new Scanner(System.in);
         String input ;
 
-        /*int counter = 0;
-        int itemsPerView =10;
-        int limit = itemsPerView;
-        while(itr.hasNext())
-        {
-            String entry = itr.next();
-            isbnToBookMap.get(entry).showBookInfo();
-            counter += 1;
-            if(counter == limit){
-                System.out.println("Type '1' to continue\nType '2' to quit");
-                input = in.nextLine();
-                if(input.equals("2")){
-                    break;
-                }
-                else{
-                    limit = limit + itemsPerView;
-                }
-            }
-        }*/
         iterateForward(itr);
         while(true){
             System.out.println("Type '1' for Next Page \nType '2' for Previous Page\nType '3' to see details of a Book\nType'q' to Stop/Quit");
@@ -209,10 +202,10 @@ class BookDatabaseManager{
     public void searchBookInDatabase(String bookTitle){
         //long startTime = System.currentTimeMillis();
         long startTime = System.currentTimeMillis();
-        if(titleToISBNListMap.containsKey(bookTitle)){
+        if(titleIndexes.containsKey(bookTitle)){
             System.out.print(System.currentTimeMillis() - startTime);
             System.out.print(" Milli Seconds Taken to Search\n");
-            List<String> isbnList= titleToISBNListMap.get(bookTitle);
+            List<String> isbnList= titleIndexes.get(bookTitle);
             for(String isbn: isbnList){
                 isbnToBookMap.get(isbn).detailsView();
             }
@@ -226,7 +219,7 @@ class BookDatabaseManager{
 
     // Checks if book is present in database then orders the book
     public void orderBook(String bookTitle){
-        if(titleToISBNListMap.containsKey(bookTitle)){
+        if(titleIndexes.containsKey(bookTitle)){
             /*List<String> isbnList= titleToISBNListMap.get(bookTitle);
             Set<String> isbnSet = new HashSet<String>();
             if(isbnList.size() > 1 ) {
@@ -304,5 +297,49 @@ class BookDatabaseManager{
         };
 
     }
+
+
+    private List<String>getISBNListFromTitleMap(NavigableSet<String> keySet){
+        List<String> isbnList= new ArrayList<String>();
+        Iterator<String> itr = keySet.iterator();
+        while(itr.hasNext())
+        {
+            List<String> list = titleIndexes.get(itr.next());
+            for (String listElement : list){
+                isbnList.add(listElement);
+            }
+        }
+
+        return isbnList;
+    }
+    private List<String>getISBNListFromAuthorMap(NavigableSet<String> keySet){
+        List<String> isbnList= new ArrayList<String>();
+        Iterator<String> itr = keySet.iterator();
+        while(itr.hasNext())
+        {
+            List<String> list = authorIndexes.get(itr.next());
+            for (String listElement : list){
+                isbnList.add(listElement);
+            }
+        }
+
+        return isbnList;
+    }
+
+    private List<String>getISBNListFromYearMap(NavigableSet<Integer> keySet){
+        List<String> isbnList= new ArrayList<String>();
+        Iterator<Integer> itr = keySet.iterator();
+
+        while(itr.hasNext())
+        {
+            List<String> list = yearIndexes.get(itr.next());
+            for (String listElement : list){
+                isbnList.add(listElement);
+            }
+        }
+
+        return isbnList;
+    }
+
 
 }
