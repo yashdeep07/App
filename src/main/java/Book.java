@@ -88,5 +88,7 @@ public class Book {
         System.out.println("Publisher :\t" + this.publisher);
         System.out.println("Price     :\t" + this.price);
         System.out.println("ISBN      :\t" + this.isbn);
+        System.out.println("Year      :\t" + this.publishedYear);
+        System.out.println();
     }
 }

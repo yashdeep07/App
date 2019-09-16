@@ -12,10 +12,11 @@ class App {
         if (args.length == 1)
             filePath = args[0];
         else
-            filePath = "/home/honey/IdeaProjects/App/Write.csv";
+            filePath = "/home/yashdeep/Documents/App/Write.csv";
 
         BookDatabaseManager manager = new BookDatabaseManager(filePath);
         Cart userCart = new Cart();
+
 
 
 
@@ -38,15 +39,9 @@ class App {
                     manager.searchBookInDatabase(bookTitle);
                     break;
 
-                /*case "3":
-                    bookTitle = orderBookInterface();
-                    manager.orderBook(bookTitle);
-                    break;*/
-
                 case "3":
                     SortFilter filter = viewBooksInterface();
                     manager.viewBooks(filter);
-                    userInput = "5";
                     break;
 
                 case "4":
@@ -58,6 +53,10 @@ class App {
                     userInput = in.nextLine();
                     if(!userInput.equals("b")){
                         Book book1 = manager.getBook(userInput);
+                        if(book1==null){
+                            System.out.println("Book Not Available!!");
+                            break;
+                        }
                         System.out.println("Type Number of Books you want to order.");
                         userInput = in.nextLine();
                         userCart.addProduct(book1,Integer.parseInt(userInput));
@@ -98,8 +97,7 @@ class App {
 
 
 
-    // Interface for Retrieving New Book Details
-    // Returns New Book Object to be added in the database
+
     public static Book addBookInterface(){
 
         Scanner in = new Scanner (System.in);
@@ -150,7 +148,7 @@ class App {
         Scanner in = new Scanner(System.in);
         SortField field ;
         SortOrder order;
-        System.out.println("Enter '1' to sort on Title\n'2' to sort on Author\n'3' to sort on Published Year");
+        System.out.println("'1' to sort on Title\n'2' to sort on Author\n'3' to sort on Published Year");
         String userInput = in.nextLine();
 
         switch(userInput){
