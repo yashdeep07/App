@@ -46,6 +46,11 @@ class App {
 
                 case "4":
                     userCart.showCart();
+                    System.out.println("To place order ,Type '1'\n");
+                    userInput = in.nextLine();
+                    if(userInput.equals("1")){
+                        System.out.println("Your Order has been placed!");
+                    }
                     break;
 
                 case "5":
