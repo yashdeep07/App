@@ -111,7 +111,7 @@ class BookDatabaseManager{
 
 
 
-    public void viewBooks(SortFilter filter ){
+    public void viewBooks(SortFilter filter ,Cart userCart ){
         SortField field = filter.getField();
         ListIterator<Book> itr;
         List<Book> bookList;
@@ -172,7 +172,7 @@ class BookDatabaseManager{
 
         iterateForward(itr);
         while(true){
-            System.out.println("Type '1' for Next Page \nType '2' for Previous Page\nType '3' to see details of a Book\nType'q' to Stop/Quit");
+            System.out.println("Type '1' for Next Page \nType '2' for Previous Page\nType '3' to see details of a Book\nType '4' to add book to cart\nType'q' to Stop/Quit");
             input = in.nextLine();
             if(input.equals("1")){
                 iterateForward(itr);
@@ -188,6 +188,16 @@ class BookDatabaseManager{
             }
             else if(input.equals("q")){
                 break;
+            }
+            else if(input.equals("4")){
+                System.out.println("Type Book ISBN number to add it to cart.");
+                input = in.nextLine();
+                Book book1 = this.getBook(input);
+                if(book1 == null) break;
+                System.out.println("Type Number of Books you want to order.");
+                input = in.nextLine();
+                userCart.addProduct(book1,Integer.parseInt(input));
+                System.out.println("Book Added To Your Cart\n");
             }
             else{
                 System.out.println("Type Valid Option!!");

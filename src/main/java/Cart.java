@@ -17,6 +17,9 @@ class Cart {
         }
     }
 
+    public int cartSize(){
+        return this.bookToQuantityMap.size();
+    }
 
     public void addProduct(Book book, int quantity){
         this.bookToQuantityMap.put(book,quantity);

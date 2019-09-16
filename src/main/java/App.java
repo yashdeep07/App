@@ -41,7 +41,7 @@ class App {
 
                 case "3":
                     SortFilter filter = viewBooksInterface();
-                    manager.viewBooks(filter);
+                    manager.viewBooks(filter ,userCart);
                     break;
 
                 case "4":
@@ -66,7 +66,11 @@ class App {
 
                 case "6":
                     while(true){
+
                         userCart.showCart();
+                        if(userCart.cartSize() == 0){
+                            break;
+                        }
                         System.out.println("Type '1' to Edit Quantity of Books\nType '2' to Remove Book\nType '3' to go back to Main Menu");
                         userInput = in.nextLine();
                         if(userInput.equals("1")){
